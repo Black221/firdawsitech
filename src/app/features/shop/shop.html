@@ -1,0 +1,356 @@
+
+<div class="max-w-7xl mx-auto p-12">
+  
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">Boutique</h1>
+        <p class="mt-1 text-sm text-gray-600">Découvrez nos produits électroniques</p>
+      </div>
+      
+      <!-- View Mode Toggle -->
+      <div class="flex items-center gap-2">
+        <button
+          (click)="viewMode.set('grid')"
+          [class.bg-indigo-100]="viewMode() === 'grid'"
+          [class.text-indigo-700]="viewMode() === 'grid'"
+          [class.bg-gray-100]="viewMode() !== 'grid'"
+          [class.text-gray-600]="viewMode() !== 'grid'"
+          class="p-2 rounded-lg transition-colors"
+          title="Vue grille">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+        </button>
+        <button
+          (click)="viewMode.set('list')"
+          [class.bg-indigo-100]="viewMode() === 'list'"
+          [class.text-indigo-700]="viewMode() === 'list'"
+          [class.bg-gray-100]="viewMode() !== 'list'"
+          [class.text-gray-600]="viewMode() !== 'list'"
+          class="p-2 rounded-lg transition-colors"
+          title="Vue liste">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    
+    <!-- Sidebar Filters -->
+    <aside class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky top-4">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900">Filtres</h2>
+            <button
+              *ngIf="hasActiveFilters()"
+              (click)="onClearFilters()"
+              class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+              Réinitialiser
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-6">
+          
+          <!-- Search -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
+            <input 
+              type="search"
+              [value]="searchQuery()"
+              (input)="searchQuery.set($any($event.target).value)"
+              placeholder="Nom, description..."
+              class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+          </div>
+
+          <!-- Categories -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Catégories</label>
+            <div class="space-y-2">
+              <label class="flex items-center cursor-pointer">
+                <input 
+                  type="radio"
+                  name="category"
+                  value="all"
+                  [checked]="selectedCategory() === 'all'"
+                  (change)="selectedCategory.set('all')"
+                  class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                <span class="ml-2 text-sm text-gray-700">Toutes les catégories</span>
+              </label>
+              <label 
+                *ngFor="let category of categories()"
+                class="flex items-center cursor-pointer">
+                <input 
+                  type="radio"
+                  name="category"
+                  [value]="category"
+                  [checked]="selectedCategory() === category"
+                  (change)="selectedCategory.set(category)"
+                  class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                <span class="ml-2 text-sm text-gray-700">{{ category }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Prix (XOF)</label>
+            <div class="space-y-3">
+              <div>
+                <input 
+                  type="range"
+                  [min]="priceRange().min"
+                  [max]="priceRange().max"
+                  [value]="minPrice()"
+                  (input)="minPrice.set(+$any($event.target).value)"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                <div class="flex justify-between text-xs text-gray-600 mt-1">
+                  <span>Min: {{ getPriceFormatted(minPrice()) }}</span>
+                </div>
+              </div>
+              <div>
+                <input 
+                  type="range"
+                  [min]="priceRange().min"
+                  [max]="priceRange().max"
+                  [value]="maxPrice()"
+                  (input)="maxPrice.set(+$any($event.target).value)"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                <div class="flex justify-between text-xs text-gray-600 mt-1">
+                  <span>Max: {{ getPriceFormatted(maxPrice()) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Filters -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Filtres rapides</label>
+            <div class="space-y-2">
+              <label class="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox"
+                  [checked]="onlyInStock()"
+                  (change)="onlyInStock.set(!onlyInStock())"
+                  class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500">
+                <span class="ml-2 text-sm text-gray-700">En stock uniquement</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox"
+                  [checked]="onlyFeatured()"
+                  (change)="onlyFeatured.set(!onlyFeatured())"
+                  class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500">
+                <span class="ml-2 text-sm text-gray-700">Produits vedettes</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sort -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
+            <select 
+              [value]="sortBy()"
+              (change)="sortBy.set($any($event.target).value)"
+              class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+              <option value="newest">Plus récents</option>
+              <option value="price-asc">Prix croissant</option>
+              <option value="price-desc">Prix décroissant</option>
+              <option value="rating">Meilleures notes</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+    <!-- Products -->
+    <main class="lg:col-span-3">
+      
+      <!-- Results Count -->
+      <div class="mb-4 flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          {{ filteredProducts().length }} produit(s)
+        </p>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading()" class="flex items-center justify-center py-12">
+        <div class="text-center">
+          <div class="inline-block w-12 h-12 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p class="mt-4 text-gray-600">Chargement des produits...</p>
+        </div>
+      </div>
+
+      <!-- Grid View -->
+      <div *ngIf="!loading() && viewMode() === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div 
+          *ngFor="let product of filteredProducts()"
+          (click)="onViewProduct(product)"
+          class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group">
+          
+          <!-- Image -->
+          <div class="relative aspect-square bg-gray-100 overflow-hidden">
+            <img 
+              [src]="getMainImage(product)" 
+              [alt]="product.name"
+              class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+            
+            <!-- Badges -->
+            <div class="absolute top-3 left-3 flex flex-col gap-2">
+              <span *ngIf="product.featured" class="px-2 py-1 bg-amber-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                ⭐ Vedette
+              </span>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                (click)="onQuickView(product, $event)"
+                class="p-2 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors mb-2"
+                title="Aperçu rapide">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="p-4">
+            <!-- Category -->
+            <p *ngIf="product.category" class="text-xs text-indigo-600 font-medium mb-1">
+              {{ product.category }}
+            </p>
+
+            <!-- Name -->
+            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+              {{ product.name }}
+            </h3>
+
+            <!-- Rating -->
+            <div *ngIf="product.rating" class="flex items-center gap-1 mb-2">
+              <div class="flex">
+                <svg *ngFor="let star of getRatingStars(product.rating)" 
+                  [class.text-amber-400]="star === 1"
+                  [class.text-gray-300]="star === 0"
+                  class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </div>
+              <span class="text-sm text-gray-600">{{ product.rating }}</span>
+            </div>
+
+            <!-- Price -->
+            <p class="text-2xl font-bold text-indigo-600 mb-3">
+              {{ getPriceFormatted(product.price) }}
+            </p>
+
+            <!-- Add to Cart Button -->
+            <button
+              (click)="onAddToCart(product, $event)"
+              class="w-full py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Ajouter au panier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- List View -->
+      <div *ngIf="!loading() && viewMode() === 'list'" class="space-y-4">
+        <div 
+          *ngFor="let product of filteredProducts()"
+          (click)="onViewProduct(product)"
+          class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group">
+          
+          <div class="flex flex-col sm:flex-row">
+            <!-- Image -->
+            <div class="relative w-full sm:w-48 aspect-square bg-gray-100 overflow-hidden flex-shrink-0">
+              <img 
+                [src]="getMainImage(product)" 
+                [alt]="product.name"
+                class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+              
+              <span *ngIf="product.featured" class="absolute top-3 left-3 px-2 py-1 bg-amber-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                ⭐ Vedette
+              </span>
+            </div>
+
+            <!-- Content -->
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <p *ngIf="product.category" class="text-xs text-indigo-600 font-medium mb-1">
+                  {{ product.category }}
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                  {{ product.name }}
+                </h3>
+
+                <p *ngIf="product.description" class="text-sm text-gray-600 mb-3 line-clamp-2">
+                  {{ product.description }}
+                </p>
+
+                <div *ngIf="product.rating" class="flex items-center gap-1 mb-3">
+                  <div class="flex">
+                    <svg *ngFor="let star of getRatingStars(product.rating)" 
+                      [class.text-amber-400]="star === 1"
+                      [class.text-gray-300]="star === 0"
+                      class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  </div>
+                  <span class="text-sm text-gray-600">{{ product.rating }}</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between gap-4">
+                <p class="text-2xl font-bold text-indigo-600">
+                  {{ getPriceFormatted(product.price) }}
+                </p>
+
+                <button
+                  (click)="onAddToCart(product, $event)"
+                  class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  Ajouter au panier
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading() && filteredProducts().length === 0" class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Aucun produit trouvé</h3>
+        <p class="text-gray-600 mb-4">Essayez de modifier vos filtres</p>
+        <button
+          (click)="onClearFilters()"
+          class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+          Réinitialiser les filtres
+        </button>
+      </div>
+
+    </main>
+
+  </div>
+
+</div>

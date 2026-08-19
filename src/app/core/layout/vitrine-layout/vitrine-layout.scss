@@ -1,0 +1,62 @@
+// src/app/core/layout/vitrine-layout/vitrine-layout.component.scss
+
+// Smooth transitions
+header {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+// Mobile menu animation
+nav {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Search bar animation
+.border-t.border-gray-200 {
+  animation: expandDown 0.2s ease-out;
+}
+
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+  }
+}
+
+// Cart badge pulse animation
+.absolute.-top-1.-right-1 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .8;
+  }
+}
+
+// Footer link hover
+footer a {
+  transition: color 0.2s ease-in-out;
+}
+
+// Ensure main takes full height
+main {
+  min-height: calc(100vh - 64px - 400px); // viewport - header - footer
+}

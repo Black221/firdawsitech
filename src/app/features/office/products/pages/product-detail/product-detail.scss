@@ -1,0 +1,46 @@
+// src/app/features/products/pages/product-detail/product-detail.component.scss
+
+// Smooth transitions for image gallery
+.aspect-square {
+  img {
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+// Thumbnail hover effects
+button {
+  &:focus {
+    outline: none;
+  }
+}
+
+// Image navigation arrows
+.bg-white\/80 {
+  backdrop-filter: blur(4px);
+}
+
+// Animation for page load
+.bg-white,
+.bg-gradient-to-br {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Toggle switch animation
+button[type="button"] {
+  transition: background-color 0.2s ease-in-out;
+  
+  span {
+    transition: transform 0.2s ease-in-out;
+  }
+}

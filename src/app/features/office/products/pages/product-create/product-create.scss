@@ -1,0 +1,66 @@
+// src/app/features/products/pages/product-create/product-create.component.scss
+
+// Custom styling for range input (rating slider)
+input[type="range"] {
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #f59e0b; // amber-500
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    
+    &:hover {
+      background: #d97706; // amber-600
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #f59e0b;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    
+    &:hover {
+      background: #d97706;
+    }
+  }
+}
+
+// Toggle switch animation
+button[role="switch"] {
+  transition: background-color 0.2s ease-in-out;
+  
+  span {
+    transition: transform 0.2s ease-in-out;
+  }
+}
+
+// Image preview hover effects
+.group {
+  &:hover {
+    .group-hover\:opacity-100 {
+      opacity: 1;
+    }
+  }
+}
+
+// Animation for form elements
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-white {
+  animation: slideIn 0.3s ease-out;
+}

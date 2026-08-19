@@ -1,0 +1,236 @@
+<!-- src/app/layout/admin-layout/admin-layout.component.html -->
+
+<div class="flex h-screen bg-gray-50 overflow-hidden">
+
+  <!-- Sidebar for Desktop -->
+  <aside [class.w-64]="sidebarOpen()" [class.w-20]="!sidebarOpen()"
+    class="hidden lg:flex flex-col transition-all duration-300 bg-white border-r border-gray-200 shadow-sm">
+
+    <!-- Logo -->
+    <div class="flex items-center space-x-3 cursor-pointer group p-2">
+      <div class="relative border rounded-lg border-gray-200">
+
+        <img src="assets/logo.png" alt="Logo" class="relative w-12 h-12 rounded-xl p-1 bg-white">
+      </div>
+      <div class="flex flex-col">
+        <div
+          [class]="'text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent '">
+          Firdawsi <span class="hidden sm:inline">Technologies</span>
+        </div>
+        <div *ngIf="isLargeScreen()" [class]="'text-xs font-medium '">
+          Surfer devient facile ✨
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <ng-container *ngFor="let item of navItems">
+        <!-- Items without children -->
+        <a *ngIf="!item.children" [routerLink]="item.route" routerLinkActive="bg-indigo-50 text-indigo-600"
+          class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-50 text-gray-700 hover:text-gray-900 relative">
+          <svg class="flex-shrink-0 w-5 h-5" [class.mr-3]="sidebarOpen()" [class.mx-auto]="!sidebarOpen()" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon" />
+          </svg>
+          <span *ngIf="sidebarOpen()" class="flex-1">{{ item.label }}</span>
+          <span *ngIf="item.badge && sidebarOpen()"
+            class="ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+            {{ item.badge }}
+          </span>
+          <span *ngIf="item.badge && !sidebarOpen()"
+            class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+            {{ item.badge }}
+          </span>
+        </a>
+
+        <!-- Items with children (expandable) -->
+        <div *ngIf="item.children" class="space-y-1">
+          <button type="button"
+            class="group w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-50 text-gray-700 hover:text-gray-900 relative"
+            [attr.aria-expanded]="item.expanded">
+            <svg class="flex-shrink-0 w-5 h-5" [class.mr-3]="sidebarOpen()" [class.mx-auto]="!sidebarOpen()" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon" />
+            </svg>
+            <span *ngIf="sidebarOpen()" class="flex-1 text-left">{{ item.label }}</span>
+            <span *ngIf="item.badge && sidebarOpen()"
+              class="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+              {{ item.badge }}
+            </span>
+            <svg *ngIf="sidebarOpen()" class="ml-auto w-4 h-4 transition-transform" [class.rotate-180]="item.expanded"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            <span *ngIf="item.badge && !sidebarOpen()"
+              class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+              {{ item.badge }}
+            </span>
+          </button>
+
+          <!-- Submenu -->
+          <div *ngIf="sidebarOpen()" class="ml-8 space-y-1">
+            <a *ngFor="let child of item.children" [routerLink]="child.route"
+              routerLinkActive="bg-indigo-50 text-indigo-600"
+              class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-50 text-gray-600 hover:text-gray-900">
+              <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="child.icon" />
+              </svg>
+              {{ child.label }}
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <div class="p-3 border-t border-gray-200">
+      <button (click)="toggleSidebar()"
+        class="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            [attr.d]="sidebarOpen() ? 'M11 19l-7-7 7-7m8 14l-7-7 7-7' : 'M13 5l7 7-7 7M5 5l7 7-7 7'" />
+        </svg>
+        <span *ngIf="sidebarOpen()" class="ml-2">Réduire</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div *ngIf="mobileMenuOpen()" class="fixed inset-0 z-40 lg:hidden" (click)="closeMobileMenu()">
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+  </div>
+
+  <!-- Mobile Sidebar -->
+  <aside *ngIf="mobileMenuOpen()"
+    class="fixed inset-y-0 left-0 z-50 w-64 bg-white lg:hidden transform transition-transform duration-300">
+
+    <!-- Mobile Logo -->
+    <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+      <div class="flex items-center space-x-3">
+        <div
+          class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          E-Shop Admin
+        </span>
+      </div>
+      <button (click)="closeMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation (same structure as desktop) -->
+    <nav class="px-3 py-4 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
+      <ng-container *ngFor="let item of navItems">
+        <a *ngIf="!item.children" [routerLink]="item.route" (click)="closeMobileMenu()"
+          routerLinkActive="bg-indigo-50 text-indigo-600"
+          class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-50 text-gray-700 hover:text-gray-900 relative">
+          <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon" />
+          </svg>
+          <span class="flex-1">{{ item.label }}</span>
+          <span *ngIf="item.badge"
+            class="ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+            {{ item.badge }}
+          </span>
+        </a>
+
+        <div *ngIf="item.children" class="space-y-1">
+          <div class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700">
+            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon" />
+            </svg>
+            <span class="flex-1">{{ item.label }}</span>
+            <span *ngIf="item.badge"
+              class="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
+              {{ item.badge }}
+            </span>
+          </div>
+
+          <div class="ml-8 space-y-1">
+            <a *ngFor="let child of item.children" [routerLink]="child.route" (click)="closeMobileMenu()"
+              routerLinkActive="bg-indigo-50 text-indigo-600"
+              class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-50 text-gray-600 hover:text-gray-900">
+              <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="child.icon" />
+              </svg>
+              {{ child.label }}
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-gray-200 shadow-sm z-10">
+      <div class="flex items-center justify-between h-16 px-4 lg:px-6">
+
+        <!-- Mobile Menu Button -->
+        <button (click)="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-2xl mx-4 hidden md:block">
+          <div class="relative">
+            <input type="search" placeholder="Rechercher des produits, commandes..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+            <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-2 lg:space-x-4">
+
+          <!-- Notifications -->
+          <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+
+          <!-- User Menu -->
+          <div class="relative">
+            <button class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <div
+                class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                <span class="text-sm font-semibold text-white">FT</span>
+              </div>
+              <div class="hidden lg:block text-left">
+                <p class="text-sm font-medium text-gray-700">Firdawsitech</p>
+                <p class="text-xs text-gray-500">admin@firdawsitech.sn</p>
+              </div>
+              <svg class="hidden lg:block w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-4 lg:p-6">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

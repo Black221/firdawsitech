@@ -1,0 +1,39 @@
+// src/app/features/products/pages/product-list/product-list.component.scss
+
+// Line clamp utility for text truncation
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+// Smooth hover transitions for product cards
+.group {
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Animation for grid items
+.card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

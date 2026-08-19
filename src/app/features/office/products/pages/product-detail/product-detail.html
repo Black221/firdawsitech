@@ -1,0 +1,353 @@
+<!-- src/app/features/products/pages/product-detail/product-detail.component.html -->
+
+<div class="max-w-7xl mx-auto">
+  
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="flex items-center justify-center py-12">
+    <div class="text-center">
+      <div class="inline-block w-12 h-12 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <p class="mt-4 text-gray-600">Chargement du produit...</p>
+    </div>
+  </div>
+
+  <!-- Product Content -->
+  <div *ngIf="!loading() && product()">
+    
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center gap-4 mb-4">
+        <button 
+          (click)="onBack()"
+          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="flex-1">
+          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">{{ product()!.name }}</h1>
+          <p class="mt-1 text-sm text-gray-600">Créé le {{ getFormattedDate(product()!.createdAt) }}</p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-2">
+          <button
+            (click)="shareProduct()"
+            class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Partager">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+          </button>
+          <button
+            (click)="onEdit()"
+            class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Modifier
+          </button>
+          <button
+            (click)="onDelete()"
+            class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            title="Supprimer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Left Column - Images -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Main Image Gallery -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <!-- Main Image Display -->
+          <div class="relative aspect-square bg-gray-100">
+            <img 
+              [src]="currentImage" 
+              [alt]="product()!.name"
+              class="w-full h-full object-contain">
+            
+            <!-- Navigation Arrows -->
+            <div *ngIf="product()!.images && product()!.images!.length > 1" class="absolute inset-0 flex items-center justify-between p-4">
+              <button
+                (click)="previousImage()"
+                class="p-2 bg-white/80 hover:bg-white rounded-full shadow-lg transition-all">
+                <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                (click)="nextImage()"
+                class="p-2 bg-white/80 hover:bg-white rounded-full shadow-lg transition-all">
+                <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Image Counter -->
+            <div *ngIf="product()!.images && product()!.images!.length > 1" class="absolute bottom-4 right-4 px-3 py-1 bg-black/60 text-white text-sm rounded-lg">
+              {{ selectedImageIndex() + 1 }} / {{ product()!.images!.length }}
+            </div>
+          </div>
+
+          <!-- Thumbnails -->
+          <div *ngIf="product()!.images && product()!.images!.length > 1" class="p-4 border-t border-gray-200">
+            <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+              <button
+                *ngFor="let image of product()!.images; let i = index"
+                (click)="selectImage(i)"
+                [class.ring-2]="selectedImageIndex() === i"
+                [class.ring-indigo-500]="selectedImageIndex() === i"
+                class="aspect-square rounded-lg overflow-hidden border-2 border-gray-200 hover:border-indigo-300 transition-all">
+                <img 
+                  [src]="image.url" 
+                  [alt]="'Thumbnail ' + (i + 1)"
+                  class="w-full h-full object-cover">
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Description</h2>
+          </div>
+          <div class="p-6">
+            <p *ngIf="product()!.description" class="text-gray-700 whitespace-pre-line leading-relaxed">
+              {{ product()!.description }}
+            </p>
+            <p *ngIf="!product()!.description" class="text-gray-500 italic">
+              Aucune description disponible
+            </p>
+          </div>
+        </div>
+
+        <!-- Specifications -->
+        <div *ngIf="product()!.specs && product()!.specs.length > 0" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Spécifications techniques</h2>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-3">
+              <li *ngFor="let spec of product()!.specs" class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-gray-700 leading-relaxed">{{ spec }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Informations du produit</h2>
+          </div>
+          <div class="p-6">
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              
+              <!-- UUID -->
+              <div>
+                <dt class="text-sm font-medium text-gray-500">UUID</dt>
+                <dd class="mt-1 text-sm text-gray-900 font-mono">{{ product()!.uuid }}</dd>
+              </div>
+
+              <!-- Category -->
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Catégorie</dt>
+                <dd class="mt-1">
+                  <span *ngIf="product()!.category" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                    {{ product()!.category }}
+                  </span>
+                  <span *ngIf="!product()!.category" class="text-sm text-gray-400">Non définie</span>
+                </dd>
+              </div>
+
+              <!-- Created At -->
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Date de création</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ getFormattedDate(product()!.createdAt) }}</dd>
+              </div>
+
+              <!-- Updated At -->
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Dernière modification</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ getFormattedDate(product()!.updatedAt) }}</dd>
+              </div>
+
+              <!-- Images Count -->
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Nombre d'images</dt>
+                <dd class="mt-1 text-sm text-gray-900">
+                  {{ product()!.images ? product()!.images!.length : 0 }}
+                </dd>
+              </div>
+
+              <!-- Specs Count -->
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Spécifications</dt>
+                <dd class="mt-1 text-sm text-gray-900">
+                  {{ product()!.specs ? product()!.specs.length : 0 }}
+                </dd>
+              </div>
+
+              <!-- Rating -->
+              <div *ngIf="product()!.rating">
+                <dt class="text-sm font-medium text-gray-500">Note</dt>
+                <dd class="mt-1 flex items-center gap-1">
+                  <div class="flex">
+                    <svg *ngFor="let star of [1,2,3,4,5]" 
+                      [class.text-amber-400]="star <= (product()!.rating || 0)"
+                      [class.text-gray-300]="star > (product()!.rating || 0)"
+                      class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  </div>
+                  <span class="text-sm text-gray-900 ml-1">{{ product()!.rating }}</span>
+                </dd>
+              </div>
+
+            </dl>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column - Sidebar -->
+      <div class="space-y-6">
+        
+        <!-- Price & Stock Card -->
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 overflow-hidden">
+          <div class="p-6 space-y-4">
+            
+            <!-- Price -->
+            <div>
+              <p class="text-sm font-medium text-gray-600">Prix</p>
+              <p class="text-3xl font-bold text-indigo-600 mt-1">
+                {{ getPriceFormatted(product()!.price) }}
+              </p>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="pt-4 border-t border-indigo-200">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700">Disponibilité</span>
+                <span 
+                  [class.bg-green-100]="product()!.inStock"
+                  [class.text-green-800]="product()!.inStock"
+                  [class.bg-red-100]="!product()!.inStock"
+                  [class.text-red-800]="!product()!.inStock"
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold">
+                  <span 
+                    [class.bg-green-500]="product()!.inStock"
+                    [class.bg-red-500]="!product()!.inStock"
+                    class="w-2 h-2 rounded-full mr-2"></span>
+                  {{ product()!.inStock ? 'En stock' : 'Rupture' }}
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Visibility Settings -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Visibilité</h2>
+          </div>
+          <div class="p-6 space-y-4">
+            
+            <!-- Featured Toggle -->
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-700">Produit vedette</p>
+                <p class="text-xs text-gray-500 mt-0.5">Afficher sur la page d'accueil</p>
+              </div>
+              <button
+                type="button"
+                (click)="onToggleFeatured()"
+                [class.bg-amber-600]="product()!.featured"
+                [class.bg-gray-200]="!product()!.featured"
+                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
+                <span 
+                  [class.translate-x-6]="product()!.featured"
+                  [class.translate-x-1]="!product()!.featured"
+                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+              </button>
+            </div>
+
+            <!-- Carousel Toggle -->
+            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+              <div>
+                <p class="text-sm font-medium text-gray-700">Carrousel</p>
+                <p class="text-xs text-gray-500 mt-0.5">Afficher dans le carrousel</p>
+              </div>
+              <button
+                type="button"
+                (click)="onToggleCarousel()"
+                [class.bg-indigo-600]="product()!.inCarousel"
+                [class.bg-gray-200]="!product()!.inCarousel"
+                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <span 
+                  [class.translate-x-6]="product()!.inCarousel"
+                  [class.translate-x-1]="!product()!.inCarousel"
+                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Actions rapides</h2>
+          </div>
+          <div class="p-6 space-y-2">
+            
+            <button
+              (click)="onEdit()"
+              class="w-full inline-flex items-center justify-center px-4 py-2 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Modifier le produit
+            </button>
+
+            <button
+              (click)="shareProduct()"
+              class="w-full inline-flex items-center justify-center px-4 py-2 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              Partager
+            </button>
+
+            <button
+              (click)="onDelete()"
+              class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Supprimer le produit
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

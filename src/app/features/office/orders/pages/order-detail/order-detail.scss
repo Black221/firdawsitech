@@ -1,0 +1,88 @@
+// src/app/features/orders/pages/order-detail/order-detail.component.scss
+
+// Animations
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Smooth transitions
+button, a {
+  transition: all 0.2s ease-in-out;
+}
+
+// Print styles
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  .bg-gray-50 {
+    background: white !important;
+  }
+
+  .shadow-sm {
+    box-shadow: none !important;
+  }
+
+  button {
+    display: none !important;
+  }
+
+  // Expand all content
+  .lg\:col-span-2,
+  .space-y-6 > div {
+    page-break-inside: avoid;
+  }
+
+  // Ensure proper printing
+  @page {
+    margin: 1cm;
+  }
+}
+
+// Hover effects
+.hover\:border-indigo-300:hover {
+  border-color: rgb(165, 180, 252);
+}
+
+.hover\:bg-gray-50:hover {
+  background-color: rgb(249, 250, 251);
+}
+
+.hover\:bg-red-50:hover {
+  background-color: rgb(254, 242, 242);
+}
+
+.hover\:bg-indigo-700:hover {
+  background-color: rgb(67, 56, 202);
+}
+
+// Custom scrollbar for long content
+.space-y-4 {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

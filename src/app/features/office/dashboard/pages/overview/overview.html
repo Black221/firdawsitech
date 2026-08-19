@@ -1,0 +1,250 @@
+<!-- src/app/features/dashboard/pages/overview/overview.component.html -->
+
+<div class="min-h-screen bg-gray-50 p-6">
+  
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Tableau de Bord</h1>
+    <p class="text-gray-600 mt-2">Vue d'ensemble de votre boutique</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="flex items-center justify-center min-h-[400px]">
+    <div class="text-center">
+      <svg class="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="text-gray-600">Chargement des données...</p>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading" class="space-y-6">
+    
+    <!-- Stats Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- Products Stats -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center">
+            <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-3xl font-bold text-gray-900">{{ stats.totalProducts }}</h3>
+            <p class="text-sm text-gray-600 mt-1">Produits Total</p>
+            <div class="flex gap-3 mt-2 text-xs">
+              <span class="text-green-600 font-medium">{{ stats.productsInStock }} en stock</span>
+              <span class="text-red-600 font-medium">{{ stats.productsOutOfStock }} rupture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Stats -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center">
+            <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-3xl font-bold text-gray-900">{{ stats.totalOrders }}</h3>
+            <p class="text-sm text-gray-600 mt-1">Commandes Total</p>
+            <div class="flex gap-3 mt-2 text-xs">
+              <span class="text-blue-600 font-medium">{{ stats.newOrders }} nouvelles</span>
+              <span class="text-purple-600 font-medium">{{ stats.shippedOrders }} expédiées</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Stats -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center">
+            <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-2xl font-bold text-gray-900">{{ stats.totalRevenue | currency:'XOF':'symbol':'1.0-0' }}</h3>
+            <p class="text-sm text-gray-600 mt-1">Revenu Total</p>
+            <div class="mt-2 text-xs text-gray-600">
+              <span>Panier moyen: {{ stats.averageOrderValue | currency:'XOF':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Products Stats -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-4">
+          <div class="flex-shrink-0 w-14 h-14 bg-yellow-100 rounded-lg flex items-center justify-center">
+            <svg class="w-7 h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-3xl font-bold text-gray-900">{{ stats.featuredProducts }}</h3>
+            <p class="text-sm text-gray-600 mt-1">Produits Vedettes</p>
+            <div class="mt-2 text-xs text-gray-600">
+              <span>Mis en avant</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recent Orders & Featured Products Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Recent Orders -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-bold text-gray-900">Commandes Récentes</h2>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div *ngFor="let order of recentOrders" 
+                 class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-semibold text-gray-900">{{ order.orderNumber }}</span>
+                  <span 
+                    [class]="getStatusClass(order.status)"
+                    class="px-2 py-1 text-xs font-semibold rounded-full">
+                    {{ getStatusLabel(order.status) }}
+                  </span>
+                </div>
+                <p class="text-sm text-gray-600">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold text-gray-900">{{ order.totalAmount | currency:'XOF':'symbol':'1.0-0' }}</p>
+              </div>
+            </div>
+            
+            <div *ngIf="recentOrders.length === 0" class="text-center py-12">
+              <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+              </svg>
+              <p class="text-gray-600">Aucune commande récente</p>
+            </div>
+          </div>
+          
+          <div class="mt-6 pt-4 border-t border-gray-200">
+            <button 
+              routerLink="/admin/orders"
+              class="w-full px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
+              Voir toutes les commandes
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Products -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-bold text-gray-900">Produits Vedettes</h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div *ngFor="let product of featuredProducts" 
+                 class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+              <img 
+                [src]="product.imageUrl || 'assets/images/no-image.png'" 
+                [alt]="product.name" 
+                class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ product.name }}</h4>
+                <p class="text-lg font-bold text-indigo-600 mb-2">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</p>
+                <span 
+                  [class]="product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                  class="px-2 py-1 text-xs font-semibold rounded-full">
+                  {{ product.inStock ? 'En stock' : 'Rupture' }}
+                </span>
+              </div>
+            </div>
+            
+            <div *ngIf="featuredProducts.length === 0" class="col-span-2 text-center py-12">
+              <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+              <p class="text-gray-600">Aucun produit vedette</p>
+            </div>
+          </div>
+          
+          <div class="mt-6 pt-4 border-t border-gray-200">
+            <button 
+              routerLink="/admin/products"
+              class="w-full px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
+              Voir tous les produits
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-bold text-gray-900">Actions Rapides</h2>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <button 
+            routerLink="/admin/products/create"
+            class="flex items-center gap-3 px-6 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span>Nouveau Produit</span>
+          </button>
+
+          <button 
+            routerLink="/admin/orders"
+            class="flex items-center gap-3 px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            <span>Voir Commandes</span>
+          </button>
+
+          <button 
+            routerLink="/admin/products"
+            class="flex items-center gap-3 px-6 py-4 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            <span>Gérer Produits</span>
+          </button>
+
+          <button 
+            routerLink="/admin/settings"
+            class="flex items-center gap-3 px-6 py-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span>Paramètres</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

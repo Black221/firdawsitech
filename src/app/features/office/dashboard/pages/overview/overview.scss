@@ -1,0 +1,49 @@
+// src/app/features/dashboard/pages/overview/overview.component.scss
+
+// Animations
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Smooth transitions
+button,
+div {
+  transition: all 0.2s ease-in-out;
+}
+
+// Line clamp utility (si pas supporté par Tailwind)
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+// Hover effects pour compatibilité navigateurs
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+// Custom scrollbar (optionnel)
+.space-y-4::-webkit-scrollbar {
+  width: 6px;
+}
+
+.space-y-4::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.space-y-4::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.space-y-4::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
