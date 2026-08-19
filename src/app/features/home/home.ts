@@ -1,10 +1,12 @@
-import { Component, HostListener, OnInit, signal } from '@angular/core';
+import { Component, HostListener, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Product } from '../../core/models/product-model';
 import { ProductsService } from '../office/products/services/products';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { CartService } from '../shop/services/cart-service';
+import { SeoService } from '../../core/services/seo';
 
 
 interface Service {
@@ -68,15 +70,23 @@ export class Home implements OnInit {
 
   // Carousel auto-play interval
   private carouselInterval: any;
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor(
     private productsService: ProductsService,
     private cartService: CartService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private seo: SeoService
   ) { }
 
   ngOnInit(): void {
+    this.seo.update({
+      title: 'Vente de matériels électro-informatique à Dakar, Sénégal',
+      description: "Achetez de l'équipement électro-informatique à des prix très abordables et profitez des autres services que nous offrons à Dakar, Sénégal.",
+      path: '/',
+      type: 'website',
+    });
     this.loadCarouselAndFeaturedProducts();
     this.startCarouselAutoPlay();
   }
@@ -123,6 +133,7 @@ export class Home implements OnInit {
   }
 
   startCarouselAutoPlay(): void {
+    if (!this.isBrowser) return;
     this.carouselInterval = setInterval(() => {
       this.nextSlide();
     }, 5000); // Change slide every 5 seconds
@@ -144,7 +155,7 @@ export class Home implements OnInit {
 
   // Navigation
   onViewProduct(product: Product): void {
-    this.router.navigate(['/boutique', product.uuid]);
+    this.router.navigate(['/boutique', product.slug]);
   }
 
   onShopNow(): void {

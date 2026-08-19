@@ -294,9 +294,9 @@
                   ⭐ Produit Vedette
                 </div>
 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                   {{ product.name }}
-                </h1>
+                </h2>
 
                 <p *ngIf="product.description" class="text-xl text-gray-200 line-clamp-3">
                   {{ product.description }}
@@ -387,7 +387,7 @@
     <!-- Fallback if no carousel products -->
     <div *ngIf="carouselProducts().length === 0" class="h-[500px] lg:h-[600px] flex items-center justify-center">
       <div class="text-center text-white">
-        <h1 class="text-5xl font-bold mb-4">Bienvenue sur notre boutique</h1>
+        <h2 class="text-5xl font-bold mb-4">Bienvenue sur notre boutique</h2>
         <p class="text-xl text-gray-200 mb-8">Découvrez nos produits électroniques</p>
         <button (click)="onShopNow()"
           class="px-8 py-4 bg-white text-indigo-900 font-bold rounded-xl hover:bg-gray-100 transition-all">

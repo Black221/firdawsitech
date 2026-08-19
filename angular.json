@@ -39,7 +39,19 @@
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "ssr": {
+              "entry": "src/server.ts"
+            },
+            "security": {
+              "allowedHosts": [
+                "firdawsitech.sn",
+                "www.firdawsitech.sn",
+                "localhost"
+              ]
+            }
           },
           "configurations": {
             "production": {

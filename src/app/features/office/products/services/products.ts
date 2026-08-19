@@ -38,8 +38,8 @@ export class ProductsService {
     return this.http.get<Product>(`${this.apiUrl}/${uuid}`);
   }
 
-  getProductFromShopById(uuid: string): Observable<Product> {
-    return this.http.get<Product>(`${environment.apiUrl}/shop/${uuid}`);
+  getProductBySlug(slug: string): Observable<Product> {
+    return this.http.get<Product>(`${environment.apiUrl}/shop/${slug}`);
   }
 
   createProduct(product: CreateProductRequest): Observable<Product> {

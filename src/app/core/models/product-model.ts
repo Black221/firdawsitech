@@ -2,6 +2,7 @@
 
 export interface Product {
   uuid: string;
+  slug: string;
   name: string;
   price: number;
   category?: string;

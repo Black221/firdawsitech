@@ -1,4 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal, computed } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Product } from '../../../core/models/product-model';
 
 export interface CartItem {
@@ -10,6 +11,8 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   // State
   private items = signal<CartItem[]>([]);
 
@@ -106,6 +109,7 @@ export class CartService {
   }
 
   private saveToStorage(): void {
+    if (!this.isBrowser) return;
     const cartData = this.items().map(item => ({
       productUuid: item.product.uuid,
       quantity: item.quantity,
@@ -115,6 +119,7 @@ export class CartService {
   }
 
   private loadFromStorage(): void {
+    if (!this.isBrowser) return;
     try {
       const stored = localStorage.getItem('cart');
       if (stored) {

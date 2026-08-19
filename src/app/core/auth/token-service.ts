@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenService {
+    private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
     private _accessToken: string | null = null;
     private _refreshToken: string | null = null;
 
@@ -11,8 +13,8 @@ export class TokenService {
      * Constructor
      */
     constructor() {
-        this._accessToken = localStorage.getItem('accessToken');
-        this._refreshToken = localStorage.getItem('refreshToken');
+        this._accessToken = this.isBrowser ? localStorage.getItem('accessToken') : null;
+        this._refreshToken = this.isBrowser ? localStorage.getItem('refreshToken') : null;
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -28,7 +30,8 @@ export class TokenService {
 
     set accessToken(token: string | null) {
         this._accessToken = token;
-        
+        if (!this.isBrowser) return;
+
         if (token) {
             localStorage.setItem('accessToken', token);
         } else {
@@ -45,7 +48,8 @@ export class TokenService {
 
     set refreshToken(token: string | null) {
         this._refreshToken = token;
-        
+        if (!this.isBrowser) return;
+
         if (token) {
             localStorage.setItem('refreshToken', token);
         } else {

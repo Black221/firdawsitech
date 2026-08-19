@@ -4,6 +4,7 @@ import { Product } from '../../core/models/product-model';
 import { ProductsService } from '../office/products/services/products';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartService } from './services/cart-service';
+import { SeoService } from '../../core/services/seo';
 
 type ViewMode = 'grid' | 'list';
 type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'rating';
@@ -108,10 +109,17 @@ export class Shop implements  OnInit {
     private productsService: ProductsService,
     private cartService: CartService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private seo: SeoService
   ) {}
 
   ngOnInit(): void {
+    this.seo.update({
+      title: 'Boutique - Ordinateurs, accessoires et équipements informatiques',
+      description: "Parcourez notre catalogue d'ordinateurs, accessoires et équipements électro-informatiques disponibles à Dakar, Sénégal.",
+      path: '/boutique',
+      type: 'website',
+    });
     this.loadProducts();
     this.initializePriceRange();
   }
@@ -145,7 +153,7 @@ export class Shop implements  OnInit {
   }
 
   onViewProduct(product: Product): void {
-    this.router.navigate(['/boutique', product.uuid]);
+    this.router.navigate(['/boutique', product.slug]);
   }
 
   onAddToCart(product: Product, event: Event): void {

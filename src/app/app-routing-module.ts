@@ -27,7 +27,7 @@ const routes: Routes = [
 				loadChildren: () => import('./features/shop/shop-module').then(m => m.ShopModule)
 			},
 			{
-				path: 'boutique/:uuid',
+				path: 'boutique/:slug',
 				loadChildren: () => import('./features/product-detail/product-detail-module').then(m => m.ProductDetailModule)
 			},
 			{

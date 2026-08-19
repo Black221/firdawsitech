@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '../office/products/services/products';
 import { CartService } from '../shop/services/cart-service';
+import { SeoService } from '../../core/services/seo';
 
 @Component({
   selector: 'app-product-detail',
@@ -43,25 +44,37 @@ export class ProductDetail   implements OnInit {
     private router: Router,
     private productsService: ProductsService,
     private cartService: CartService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private seo: SeoService
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      const uuid = params['uuid'];
-      if (uuid) {
-        this.loadProduct(uuid);
+      const slug = params['slug'];
+      if (slug) {
+        this.loadProduct(slug);
       }
     });
   }
 
-  loadProduct(uuid: string): void {
+  loadProduct(slug: string): void {
     this.loading.set(true);
-    this.productsService.getProductFromShopById(uuid).subscribe({
+    this.productsService.getProductBySlug(slug).subscribe({
       next: (product) => {
         this.product.set(product);
         this.loading.set(false);
         this.loadRelatedProducts(product.category || '');
+
+        const primaryImage = product.images?.find(i => i.primaryImage)?.url
+          || product.images?.[0]?.url
+          || product.imageUrl;
+        this.seo.update({
+          title: product.name,
+          description: this.buildMetaDescription(product),
+          path: `/boutique/${product.slug}`,
+          image: primaryImage,
+          type: 'product',
+        });
       },
       error: (error) => {
         console.error('Error loading product:', error);
@@ -135,12 +148,21 @@ export class ProductDetail   implements OnInit {
   }
 
   onViewRelatedProduct(product: Product): void {
-    this.router.navigate(['/boutique', product.uuid]);
+    this.router.navigate(['/boutique', product.slug]);
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // Utilities
+  private buildMetaDescription(product: Product): string {
+    const base = (product.description || '').replace(/<[^>]*>/g, '').trim();
+    const price = this.getPriceFormatted(product.price);
+    const text = base
+      ? `${product.name} - ${base}`
+      : `${product.name} - Disponible à ${price} chez FirdawsiTech, Dakar.`;
+    return text.length > 160 ? text.slice(0, 157).trimEnd() + '...' : text;
+  }
+
   getPriceFormatted(price: number): string {
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
